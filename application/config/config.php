@@ -23,7 +23,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | a PHP script and you can easily do that on your own.
 |
 */
-$config['base_url'] = 'http://localhost/personal/dndspells2_api';
+// CHANGE THIS TO A REAL SERVER
+$config['base_url'] = 'http://localhost/personal/dndspells2-api';
 
 /*
 |--------------------------------------------------------------------------
