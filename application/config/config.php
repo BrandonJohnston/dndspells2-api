@@ -24,7 +24,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 |
 */
 // CHANGE THIS TO A REAL SERVER
-$config['base_url'] = 'http://localhost/personal/dndspells2-api';
+$config['base_url'] = 'http://brandon.bionicdreamer.com';
 
 /*
 |--------------------------------------------------------------------------
@@ -36,7 +36,7 @@ $config['base_url'] = 'http://localhost/personal/dndspells2-api';
 | variable so that it is blank.
 |
 */
-$config['index_page'] = 'index.php';
+$config['index_page'] = 'api.php';
 
 /*
 |--------------------------------------------------------------------------
@@ -369,7 +369,7 @@ $config['encryption_key'] = 'compass';
 |
 */
 $config['sess_driver'] = 'database';
-$config['sess_cookie_name'] = 'ci_session';
+$config['sess_cookie_name'] = 'cisession';
 $config['sess_expiration'] = 0;
 $config['sess_save_path'] = 'ci_sessions';
 $config['sess_match_ip'] = TRUE;

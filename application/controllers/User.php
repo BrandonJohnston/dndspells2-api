@@ -119,6 +119,59 @@ class User extends CI_Controller {
 
     }
 
+
+    ////////////////////////////////////////////////////////////////////////////////
+    //
+    //  currentUser - returns data about the current user session
+    //
+    ////////////////////////////////////////////////////////////////////////////////
+    public function logout()
+    {
+
+        $this->session->sess_destroy();
+        $newdata = array(
+            'id'        => '',
+            'email'     => '',
+            'logged_in' => FALSE,
+        );
+        $this->session->unset_userdata($newdata);
+        $data['logout'] = array(
+            'authorized' => FALSE
+        );
+        $this->load->view('api/user/logout_view', $data);
+
+    }
+
+
+    ////////////////////////////////////////////////////////////////////////////////
+    //
+    //  currentUser - returns data about the current user session
+    //
+    ////////////////////////////////////////////////////////////////////////////////
+    public function currentUser()
+    {
+
+        $user = $this->session->userdata('name');
+
+        print_r($user);
+
+        if ($user) {
+            $data['response'] = array(
+                'authorized'    => TRUE,
+                'userId'        => $this->session->userdata('id')
+            );
+        }
+        else
+        {
+            $data['response'] = array(
+                'authorized' => FALSE,
+                'error' => 'You are not logged in.'
+            );
+        }
+        $this->load->view('api/user/currentuser_view', $data);
+
+    }
+
 }
 
 ?>

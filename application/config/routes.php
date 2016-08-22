@@ -58,8 +58,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 ////////////////////////////////////////////////////////////////////////////////
 $route['api/user/signup'] = 'user/signup';              // User signup
 //$route['api/user/login'] =  'user/login';               // User login
-//$route['api/user/logout'] = 'user/logout';              // User logout
-//$route['api/user/checklogin'] = 'user/checkLogin_API';  // Check if a user is logged in or not
+$route['api/user/logout'] = 'user/logout';              // User logout
+$route['api/user/currentUser'] = 'user/currentUser';    // Check if a user is logged in or not
 
 
 // Default Routes
