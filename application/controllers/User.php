@@ -3,16 +3,12 @@
 class User extends CI_Controller {
 
 
-    ////////////////////////////////////////////////////////////////////////////////
-    //
-    //  Signup logic
-    //
-    ////////////////////////////////////////////////////////////////////////////////
-    public function signup()
-    {
+    function __construct() {
+
+        parent::__construct();
 
         // Load form helper library
-        $this->load->helper(array('form', 'url'));
+        $this->load->helper('form');
 
         // Load form validation library
         $this->load->library('form_validation');
@@ -20,6 +16,29 @@ class User extends CI_Controller {
         // Load user_model
         $this->load->model('user_model');
 
+
+        //
+        // Cross site headers - allow access to API from a different domain
+        //
+        header("Access-Control-Allow-Credentials: true");
+        header('Access-Control-Allow-Origin: http://127.0.0.1:8080');
+        header("Access-Control-Allow-Headers: Origin, X-CSRF-Token, X-Requested-With, Content-Type, Accept, Access-Control-Request-Method, Authorization");
+        header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE");
+
+        if ( "OPTIONS" === $_SERVER['REQUEST_METHOD'] ) {
+            die();
+        }
+
+    }
+
+
+    ////////////////////////////////////////////////////////////////////////////////
+    //
+    //  Signup logic
+    //
+    ////////////////////////////////////////////////////////////////////////////////
+    public function signup()
+    {
 
         // Load our form into $_POST so validation will work
         $_POST = json_decode(file_get_contents("php://input"), true);
@@ -33,6 +52,7 @@ class User extends CI_Controller {
                 'required'  => 100
             )
         );
+
         $this->form_validation->set_rules(
             'email',
             'Email',
@@ -43,6 +63,7 @@ class User extends CI_Controller {
                 'valid_email'   => 102
             )
         );
+
         $this->form_validation->set_rules(
             'password',
             'Password',
@@ -57,9 +78,9 @@ class User extends CI_Controller {
 
             // Form Validation Failed, return error to user
             // TODO: figure out error codes
-            $this->output->set_status_header('400');
+            //$this->output->set_status_header('400');
             $data['response'] = array(
-                'authorized' => FALSE,
+                'loggedin' => FALSE,
                 'error' => TRUE
             );
 
@@ -82,24 +103,22 @@ class User extends CI_Controller {
             {
 
                 // We found an email / password pair, create a session
-                $sess_array = array();
                 foreach($result as $row)
                 {
-                    $sess_array = array(
+
+                    $this->session->set_userdata('name', $row->name);
+                    $this->session->set_userdata('id', $row->id);
+                    $this->session->set_userdata('email', $row->email);
+                    $this->session->set_userdata('loggedin', TRUE);
+
+                    $data['response'] = array(
                         'name'      => $row->name,
                         'id'        => $row->id,
                         'email'     => $row->email,
-                        'logged_in' => TRUE
+                        'loggedin'  => TRUE
                     );
 
-                    $this->session->set_userdata($sess_array);
                 }
-
-                $data['response'] = array(
-                    'authorized'    => TRUE,
-                    'userId'        => $sess_array['id'],
-                    'userName'      => $sess_array['name']
-                );
 
             }
             else
@@ -107,7 +126,7 @@ class User extends CI_Controller {
 
                 // We did not find an email / password pair, return an error
                 $data['response'] = array(
-                    'authorized' => FALSE,
+                    'loggedin' => FALSE,
                     'error' => TRUE
                 );
 
@@ -116,6 +135,100 @@ class User extends CI_Controller {
         }
 
         $this->load->view('api/user/signup_view', $data);
+
+    }
+
+
+    ////////////////////////////////////////////////////////////////////////////////
+    //
+    //  login - attempts to log in a user
+    //
+    ////////////////////////////////////////////////////////////////////////////////
+    public function login()
+    {
+
+        // Load our form into $_POST so validation will work
+        $_POST = json_decode(file_get_contents("php://input"), true);
+
+        // Validate form fields
+        $this->form_validation->set_rules(
+            'email',
+            'Email',
+            'required|trim|strip_tags',
+            array(
+                'required'      => 100
+            )
+        );
+
+        $this->form_validation->set_rules(
+            'password',
+            'Password',
+            'required|trim|strip_tags',
+            array(
+                'required'  => 100
+            )
+        );
+
+
+        if ($this->form_validation->run() === FALSE)
+        {
+
+            // Form Validation Failed, return error to user
+            $data['response'] = array(
+                'loggedin' => FALSE,
+                'error' => "test1"
+            );
+
+        }
+        else
+        {
+
+            // Form Validation Success
+            $user = json_decode(file_get_contents("php://input"), true);
+
+            // Create the users session
+            $user_email = $user['email'];
+            $user_password = $user['password'];
+
+            // query the database
+            $result = $this->user_model->user_login($user_email, $user_password);
+
+            if ($result)
+            {
+
+                // We found an email / password pair, create a session
+                foreach($result as $row)
+                {
+
+                    $this->session->set_userdata('name', $row->name);
+                    $this->session->set_userdata('id', $row->id);
+                    $this->session->set_userdata('email', $row->email);
+                    $this->session->set_userdata('loggedin', TRUE);
+
+                    $data['response'] = array(
+                        'name'      => $row->name,
+                        'id'        => $row->id,
+                        'email'     => $row->email,
+                        'loggedin'  => TRUE
+                    );
+
+                }
+
+            }
+            else
+            {
+
+                // We did not find an email / password pair, return an error
+                $data['response'] = array(
+                    'loggedin' => FALSE,
+                    'error' => TRUE
+                );
+
+            }
+
+        }
+
+        $this->load->view('api/user/login_view', $data);
 
     }
 
@@ -132,11 +245,11 @@ class User extends CI_Controller {
         $newdata = array(
             'id'        => '',
             'email'     => '',
-            'logged_in' => FALSE,
+            'loggedin' => FALSE,
         );
         $this->session->unset_userdata($newdata);
         $data['logout'] = array(
-            'authorized' => FALSE
+            'loggedin' => FALSE
         );
         $this->load->view('api/user/logout_view', $data);
 
@@ -151,20 +264,22 @@ class User extends CI_Controller {
     public function currentUser()
     {
 
-        $user = $this->session->userdata('name');
 
-        print_r($user);
 
-        if ($user) {
+        $user = $this->session->all_userdata();
+
+        if ($user['loggedin']) {
             $data['response'] = array(
-                'authorized'    => TRUE,
-                'userId'        => $this->session->userdata('id')
+                'name'      => $this->session->userdata('name'),
+                'id'        => $this->session->userdata('id'),
+                'email'     => $this->session->userdata('email'),
+                'loggedin' => TRUE
             );
         }
         else
         {
             $data['response'] = array(
-                'authorized' => FALSE,
+                'loggedin' => FALSE,
                 'error' => 'You are not logged in.'
             );
         }
@@ -173,5 +288,3 @@ class User extends CI_Controller {
     }
 
 }
-
-?>
