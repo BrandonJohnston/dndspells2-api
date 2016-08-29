@@ -221,7 +221,7 @@ class User extends CI_Controller {
                 // We did not find an email / password pair, return an error
                 $data['response'] = array(
                     'loggedin' => FALSE,
-                    'error' => TRUE
+                    'error' => 103
                 );
 
             }
