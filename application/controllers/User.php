@@ -58,9 +58,9 @@ class User extends CI_Controller {
             'Email',
             'required|valid_email|is_unique[users.email]|trim|strip_tags',
             array(
-                'required'      => 100,
-                'is_unique'     => 101,
-                'valid_email'   => 102
+                'required'      => 101,
+                'is_unique'     => 102,
+                'valid_email'   => 103
             )
         );
 
@@ -69,19 +69,21 @@ class User extends CI_Controller {
             'Password',
             'required|trim|strip_tags',
             array(
-                'required'  => 100
+                'required'  => 104
             )
         );
 
         if ($this->form_validation->run() === FALSE)
         {
 
+            $errorCodes = intval(strip_tags(validation_errors()));
+
             // Form Validation Failed, return error to user
             // TODO: figure out error codes
             //$this->output->set_status_header('400');
             $data['response'] = array(
                 'loggedin' => FALSE,
-                'error' => TRUE
+                'error' => $errorCodes
             );
 
         }
@@ -127,7 +129,7 @@ class User extends CI_Controller {
                 // We did not find an email / password pair, return an error
                 $data['response'] = array(
                     'loggedin' => FALSE,
-                    'error' => TRUE
+                    'error' => 105
                 );
 
             }
@@ -156,7 +158,7 @@ class User extends CI_Controller {
             'Email',
             'required|trim|strip_tags',
             array(
-                'required'      => 100
+                'required'      => 101
             )
         );
 
@@ -165,7 +167,7 @@ class User extends CI_Controller {
             'Password',
             'required|trim|strip_tags',
             array(
-                'required'  => 100
+                'required'  => 104
             )
         );
 
@@ -173,10 +175,12 @@ class User extends CI_Controller {
         if ($this->form_validation->run() === FALSE)
         {
 
+            $errorCodes = intval(strip_tags(validation_errors()));
+
             // Form Validation Failed, return error to user
             $data['response'] = array(
                 'loggedin' => FALSE,
-                'error' => "test1"
+                'error' => $errorCodes
             );
 
         }
@@ -221,7 +225,7 @@ class User extends CI_Controller {
                 // We did not find an email / password pair, return an error
                 $data['response'] = array(
                     'loggedin' => FALSE,
-                    'error' => 103
+                    'error' => 105
                 );
 
             }

@@ -62,6 +62,14 @@ $route['api/user/logout'] = 'user/logout';              // User logout
 $route['api/user/currentUser'] = 'user/currentUser';    // Check if a user is logged in or not
 
 
+////////////////////////////////////////////////////////////////////////////////
+//
+// Spells API
+//
+////////////////////////////////////////////////////////////////////////////////
+$route['api/5e/spells/getspells'] = 'spells_5e/getspells';  // User signup
+
+
 // Default Routes
 $route['default_controller'] = 'welcome';
 $route['404_override'] = '';
