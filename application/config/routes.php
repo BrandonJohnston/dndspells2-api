@@ -67,7 +67,15 @@ $route['api/user/currentUser'] = 'user/currentUser';    // Check if a user is lo
 // Spells API
 //
 ////////////////////////////////////////////////////////////////////////////////
-$route['api/5e/spells/getspells'] = 'spells_5e/getspells';  // User signup
+$route['api/5e/spells/getspells'] = 'spells_5e/getspells';  // Get 5e spells
+
+
+////////////////////////////////////////////////////////////////////////////////
+//
+// Spellbook API
+//
+////////////////////////////////////////////////////////////////////////////////
+$route['api/spellbook/create'] = 'spellbook/create';  // Create a new spellbook
 
 
 // Default Routes

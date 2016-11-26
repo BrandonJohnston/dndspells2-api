@@ -10,7 +10,7 @@ class Spells_model_5e extends CI_Model {
 
     ////////////////////////////////////////////////////////////////////////////////
     //
-    // Attempt to login a user
+    // Get spells data and format
     //
     ////////////////////////////////////////////////////////////////////////////////
     public function get_spells($slug = FALSE, $api = FALSE)
@@ -26,7 +26,7 @@ class Spells_model_5e extends CI_Model {
                 $query = $this->db->get('spells_5e');
                 $data = $query->result_array();
 
-                // Convert class string to an array
+                // Convert class string to an array & bool values to true/false
                 foreach ($data as $key => $value)
                 {
                     $spellClassesArr = explode(',', $value['classes']);
@@ -39,14 +39,6 @@ class Spells_model_5e extends CI_Model {
                     $data[$key]['verbal'] = $value['verbal'] == 0 ? false : true;
                 }
 
-
-                // Convert components string to an array
-//                foreach ($data as $key => $value)
-//                {
-//                    $spellComponentsArr = explode(',', $value['components']);
-//                    $data[$key]['components'] = $spellComponentsArr;
-//                }
-
                 return $data;
             }
             else
@@ -58,10 +50,6 @@ class Spells_model_5e extends CI_Model {
                 // Convert class string to an array
                 $spellClassesArr = explode(',', $data['classes']);
                 $data['classes'] = $spellClassesArr;
-
-                // Convert components string to an array
-//                $spellComponentsArr = explode(',', $data['components']);
-//                $data['components'] = $spellComponentsArr;
 
                 return $data;
             }

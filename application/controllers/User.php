@@ -268,8 +268,6 @@ class User extends CI_Controller {
     public function currentUser()
     {
 
-
-
         $user = $this->session->all_userdata();
 
         if ($user['loggedin']) {
